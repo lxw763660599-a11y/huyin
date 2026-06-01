@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>护隐 - 防偷拍安全助手</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="logo">🛡️ 护隐</a>
+    <div class="nav-links">
+      <a href="#map-section">风险地图</a>
+      <a href="#guides">防护攻略</a>
+      <a href="#check">摄像头检测</a>
+      <a href="#report">举报入口</a>
+    </div>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#map-section">风险地图</a>
+  <a href="#guides">防护攻略</a>
+  <a href="#check">摄像头检测</a>
+  <a href="#report">举报入口</a>
+</div>
+
+<!-- Hero 区域 -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🔒 隐私安全 · 人人有责</div>
+    <h1>保护你的隐私，<br>远离偷拍威胁</h1>
+    <p>汇聚全国偷拍热点数据，提供专业检测攻略，让每个人都能安全出行。</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num" data-count="1286">0</span>
+        <span class="stat-label">已标记地点</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="47">0</span>
+        <span class="stat-label">覆盖城市</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="89000">0</span>
+        <span class="stat-label">用户信任</span>
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#map-section" class="btn btn-primary">查看风险地图</a>
+      <a href="#guides" class="btn btn-outline">学习防护技巧</a>
+    </div>
+  </div>
+</section>
+
+<!-- 风险地图 -->
+<section class="section" id="map-section">
+  <div class="section-header">
+    <h2>🗺️ 偷拍风险地图</h2>
+    <p>查看全国已报告的高风险地点，出行前检查目的地安全性</p>
+  </div>
+  <div class="map-controls">
+    <div class="map-search">
+      <input type="text" id="mapSearch" placeholder="搜索城市或地点..." />
+    </div>
+    <div class="map-filters">
+      <button class="filter-btn active" data-type="all">全部</button>
+      <button class="filter-btn" data-type="酒店">酒店</button>
+      <button class="filter-btn" data-type="民宿">民宿</button>
+      <button class="filter-btn" data-type="公厕">公厕</button>
+      <button class="filter-btn" data-type="试衣间">试衣间</button>
+      <button class="filter-btn" data-type="浴室">浴室/温泉</button>
+    </div>
+    <div class="map-legend">
+      <span class="legend-dot safe"></span> 低风险
+      <span class="legend-dot medium"></span> 中风险
+      <span class="legend-dot high"></span> 高风险
+    </div>
+  </div>
+  <div class="map-container" id="map"></div>
+</section>
+
+<!-- 防护攻略 -->
+<section class="section section-alt" id="guides">
+  <div class="section-header">
+    <h2>📖 防偷拍攻略</h2>
+    <p>从入门到精通，学会识别和防范各类偷拍设备</p>
+  </div>
+  <div class="guide-grid">
+    <!-- 攻略卡片 -->
+    <div class="guide-card" onclick="openGuide('入门检查')">
+      <div class="guide-icon">🔍</div>
+      <h3>入门检查法</h3>
+      <p>住酒店/民宿第一步，5分钟快速排查常见偷拍位置</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+    <div class="guide-card" onclick="openGuide('红外检测')">
+      <div class="guide-icon">📱</div>
+      <h3>手机红外检测</h3>
+      <p>用手机摄像头就能发现隐藏的针孔摄像头</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+    <div class="guide-card" onclick="openGuide('APP检测')">
+      <div class="guide-icon">📡</div>
+      <h3>APP辅助检测</h3>
+      <p>推荐专业检测APP，扫描WiFi和蓝牙设备发现摄像头</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+    <div class="guide-card" onclick="openGuide('反光排查')">
+      <div class="guide-icon">🔦</div>
+      <h3>反光排查法</h3>
+      <p>关灯用手电筒扫一遍，镜头反光无处藏身</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+    <div class="guide-card" onclick="openGuide('高发场景')">
+      <div class="guide-icon">⚠️</div>
+      <h3>高发场景识别</h3>
+      <p>哪些场所最容易被偷拍？如何提前预防</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+    <div class="guide-card" onclick="openGuide('法律维权')">
+      <div class="guide-icon">⚖️</div>
+      <h3>发现后怎么办</h3>
+      <p>发现偷拍设备后的正确处理步骤和法律维权指南</p>
+      <span class="guide-link">查看详情 →</span>
+    </div>
+  </div>
+</section>
+
+<!-- 摄像头检测教程 -->
+<section class="section" id="check">
+  <div class="section-header">
+    <h2>🔬 摄像头检测教程</h2>
+    <p>手把手教你检测各类隐藏摄像头</p>
+  </div>
+  <div class="check-steps">
+    <div class="check-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>关闭所有灯光</h3>
+        <p>拉上窗帘，关闭所有灯光，让房间完全黑暗。这是检测反光的第一步。</p>
+      </div>
+    </div>
+    <div class="check-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>打开手机手电筒</h3>
+        <p>用手机手电筒缓慢扫描房间每个角落。重点关注：烟雾探测器、电视机、插座、路由器、空调出风口、壁画、绿植。</p>
+      </div>
+    </div>
+    <div class="check-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>寻找反光亮点</h3>
+        <p>如果看到蓝色或紫色的反光小点，很可能就是摄像头镜头。仔细检查该区域。</p>
+      </div>
+    </div>
+    <div class="check-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>手机摄像头检测</h3>
+        <p>打开手机相机（关掉闪光灯），用镜头扫描房间。红外摄像头会在手机屏幕显示紫色光点。</p>
+      </div>
+    </div>
+    <div class="check-step">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <h3>WiFi扫描</h3>
+        <p>检查WiFi列表，寻找可疑的热点名称。无线摄像头通常会创建自己的WiFi信号。</p>
+      </div>
+    </div>
+    <div class="check-step">
+      <div class="step-num">06</div>
+      <div class="step-content">
+        <h3>发现后立即报警</h3>
+        <p>不要触碰设备，立即拍照取证并报警（110）。保留现场，等待警方处理。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 举报入口 -->
+<section class="section section-alt" id="report">
+  <div class="section-header">
+    <h2>📢 我要举报</h2>
+    <p>如果你发现了偷拍设备或可疑地点，请告诉我们，帮助更多人远离危险</p>
+  </div>
+  <div class="report-container">
+    <form class="report-form" id="reportForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>地点名称 *</label>
+          <input type="text" id="reportName" placeholder="如：XX酒店302房间" required>
+        </div>
+        <div class="form-group">
+          <label>场所类型 *</label>
+          <select id="reportType" required>
+            <option value="">请选择</option>
+            <option value="酒店">酒店</option>
+            <option value="民宿">民宿</option>
+            <option value="公厕">公共厕所</option>
+            <option value="试衣间">试衣间</option>
+            <option value="浴室">浴室/温泉</option>
+            <option value="出租屋">出租屋</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>所在城市 *</label>
+          <input type="text" id="reportCity" placeholder="如：北京" required>
+        </div>
+        <div class="form-group">
+          <label>详细地址</label>
+          <input type="text" id="reportAddress" placeholder="区/街道/门牌号">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>详细描述 *</label>
+        <textarea id="reportDesc" rows="4" placeholder="请描述你发现的具体情况：" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>风险等级</label>
+        <div class="risk-selector">
+          <label class="risk-option"><input type="radio" name="risk" value="低" checked> 🟢 低（单独个案）</label>
+          <label class="risk-option"><input type="radio" name="risk" value="中"> 🟡 中（多人报告）</label>
+          <label class="risk-option"><input type="radio" name="risk" value="高"> 🔴 高（确认偷拍设备）</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>联系方式（选填，方便我们反馈处理结果）</label>
+        <input type="text" id="reportContact" placeholder="手机号或邮箱">
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">提交举报</button>
+    </form>
+    <div class="report-info">
+      <h3>📋 举报须知</h3>
+      <ul>
+        <li>所有举报信息将严格保密</li>
+        <li>请提供真实有效的信息</li>
+        <li>发现偷拍设备请立即报警（110）</li>
+        <li>不要擅自触碰或破坏设备</li>
+        <li>保留照片、视频等证据</li>
+      </ul>
+      <div class="emergency-call">
+        📞 紧急求助：<strong>110</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="guideModal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-body" id="modalContent"></div>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <span class="logo">🛡️ 护隐</span>
+      <p>保护隐私，远离偷拍。人人有责，共同守护。</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>功能</h4>
+        <a href="#map-section">风险地图</a>
+        <a href="#guides">防护攻略</a>
+        <a href="#check">检测教程</a>
+      </div>
+      <div class="footer-col">
+        <h4>关于</h4>
+        <a href="#report">我要举报</a>
+        <a href="#">隐私政策</a>
+        <a href="#">免责声明</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 护隐 · 本站数据来源于用户举报和公开信息，仅供参考</p>
+    <p>发现偷拍设备请立即拨打 110 报警</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/locations.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
