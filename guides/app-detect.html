@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APP辅助检测 - 护隐防偷拍攻略</title>
+<style>:root{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--border:#334155;--primary:#2563eb;--success:#10b981}*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:20px}.container{max-width:800px;margin:0 auto;padding:40px 20px}h1{font-size:28px;margin-bottom:8px;color:var(--success)}h2{font-size:20px;margin:32px 0 12px;padding-left:12px;border-left:3px solid var(--success)}h3{font-size:17px;margin:20px 0 8px}p{color:var(--text2);margin-bottom:12px}ul,ol{color:var(--text2);padding-left:24px;margin-bottom:16px}li{margin-bottom:8px}li strong{color:var(--text)}.app-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0}.app-card h3{font-size:18px;margin:0 0 8px}.app-card .score{display:inline-block;background:rgba(16,185,129,0.15);color:var(--success);padding:3px 10px;border-radius:12px;font-size:13px;font-weight:600}.app-card .platform{font-size:13px;color:var(--text2);margin-left:8px}.highlight{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:16px 20px;margin:16px 0}.warning{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.25);border-radius:8px;padding:16px 20px;margin:16px 0}.back{display:inline-block;margin-bottom:24px;color:var(--text2);font-size:14px}.back:hover{color:var(--text)}@media print{body{background:#fff;color:#000}.container{max-width:100%}}</style>
+</head>
+<body>
+<div class="container">
+<a href="../index.html" class="back">← 返回护隐首页</a>
+<h1>📡 APP辅助检测</h1>
+<p>除了物理检测法，你还可以用手机 APP 扫描网络中的可疑设备。这篇攻略教你用几款免费工具辅助排查。</p>
+
+<div class="highlight">
+<h3>📌 重要提示</h3>
+<p>这些 APP 只能<strong>辅助判断</strong>，不能 100% 确定某个设备是偷拍摄像头。看到可疑设备后，仍需要用反光排查法或红外检测法<strong>物理确认</strong>。</p>
+</div>
+
+<div class="app-card">
+<h3>Fing - 网络扫描仪 <span class="score">推荐</span> <span class="platform">iOS / Android 免费</span></h3>
+<p>扫描当前 WiFi 网络中的所有连接设备，识别设备类型、厂商、IP 和 MAC 地址。这是最实用的工具。</p>
+<p><strong>使用方法：</strong></p>
+<ol>
+<li>连接到你所在房间的 WiFi（酒店/民宿 WiFi）</li>
+<li>打开 Fing，点击"扫描网络"</li>
+<li>查看设备列表，关注以下特征：
+  <ul>
+    <li>制造商名称含 "Camera"、"IPC"、"IP Camera"、"Hikvision"、"Dahua"</li>
+    <li>设备类型被识别为 "camera" 或 "surveillance"</li>
+    <li>MAC 地址前缀属于监控设备厂商（可搜索 MAC 厂商查询）</li>
+    <li>设备名称包含中文如"摄像头"、"监控"</li>
+  </ul>
+</li>
+<li>对可疑设备，记录其 IP 地址和 MAC 地址</li>
+</ol>
+<p><strong>局限：</strong>只能检测通过 WiFi 连接的摄像头，不能检测使用存储卡离线录像的设备。非 WiFi 摄像头（模拟信号、使用 4G 流量卡）也检测不到。</p>
+</div>
+
+<div class="app-card">
+<h3>Hidden Camera Detector <span class="score">辅助</span> <span class="platform">Android 免费</span></h3>
+<p>利用手机内置的<strong>磁力传感器</strong>（磁强计）检测附近的电子设备。所有通电的电子设备都会产生微弱的磁场，摄像头模块的磁场特征尤为明显。</p>
+<p><strong>使用方法：</strong></p>
+<ol>
+<li>打开 APP，先远离所有电子设备校准</li>
+<li>将手机背面慢慢靠近可疑位置（距离约 5-10cm）</li>
+<li>观察屏幕上的磁场读数：如果读数突然显著升高（超过基准值 2-3 倍），说明该位置有电子设备</li>
+<li>高读数位置 + 视觉上有小孔 = 高度可疑</li>
+</ol>
+<p><strong>局限：</strong>任何电子设备（插座、电视、路由器本身）都会引起读数变化。只能告诉你"这里有电子设备"，不能告诉你"这是摄像头"。适合排查装饰品、玩偶等不应该有电子元件的位置。</p>
+</div>
+
+<div class="app-card">
+<h3>Network Analyzer <span class="score">进阶</span> <span class="platform">iOS / Android 免费</span></h3>
+<p>比 Fing 更专业的网络分析工具。除了设备扫描外，还支持端口扫描和网络服务发现。</p>
+<p><strong>进阶用法：</strong></p>
+<ul>
+<li>对 Fing 发现的每个可疑 IP，用 Network Analyzer 扫描其开放端口</li>
+<li>摄像头通常开放 RTSP（554端口）、ONVIF（80/8080端口）、HTTP（80端口）</li>
+<li>如果某设备开放了 554 或 RTSP 相关端口，极有可能是 IP 摄像头</li>
+</ul>
+</div>
+
+<h2>不同方法的对比</h2>
+<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
+<tr style="background:var(--card);"><th style="padding:10px;text-align:left;border:1px solid var(--border);">方法</th><th style="padding:10px;text-align:left;border:1px solid var(--border);">检测范围</th><th style="padding:10px;text-align:left;border:1px solid var(--border);">准确度</th><th style="padding:10px;text-align:left;border:1px solid var(--border);">难度</th></tr>
+<tr><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">反光排查</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">所有摄像头</td><td style="padding:10px;border:1px solid var(--border);color:var(--success);">⭐⭐⭐⭐⭐</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">简单</td></tr>
+<tr><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">红外检测</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">红外摄像头</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">⭐⭐⭐</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">简单</td></tr>
+<tr><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">WiFi 扫描</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">WiFi 摄像头</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">⭐⭐⭐</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">中等</td></tr>
+<tr><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">磁力检测</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">通电设备</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">⭐⭐</td><td style="padding:10px;border:1px solid var(--border);color:var(--text2);">简单</td></tr>
+</table>
+
+<h2>推荐检测流程</h2>
+<ol>
+<li><strong>进门先做</strong>：反光排查法（最可靠，5分钟）</li>
+<li><strong>如果房间有 WiFi</strong>：打开 Fing 扫描（2分钟，顺便做）</li>
+<li><strong>如果手机支持红外</strong>：关灯红外检测（3分钟，多一层保障）</li>
+<li><strong>对可疑位置</strong>：用磁力检测仪验证（精准排查）</li>
+</ol>
+
+<div class="warning">
+<h3>⚠️ 不要犯的错</h3>
+<ul>
+<li><strong>只依赖APP不物理检查</strong>：离线摄像头 APP 检测不到</li>
+<li><strong>看到未知设备就恐慌</strong>：酒店的智能电视、空调控制器可能显示为未知设备</li>
+<li><strong>擅自拆卸可疑设备</strong>：保留证据最重要，拍照后报警</li>
+</ul>
+</div>
+
+<p style="margin-top:40px;text-align:center;color:var(--text2);font-size:13px;">护隐 · 保护隐私，远离偷拍</p>
+</div>
+</body>
+</html>

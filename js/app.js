@@ -137,6 +137,15 @@ document.getElementById('mapSearch').addEventListener('input', function() {
 });
 
 // ===== 攻略弹窗 =====
+var guidePageMap = {
+  '入门检查': 'guides/entry-check.html',
+  '红外检测': 'guides/ir-detect.html',
+  'APP检测': 'guides/app-detect.html',
+  '反光排查': 'guides/reflect-check.html',
+  '高发场景': 'guides/high-risk-scenes.html',
+  '法律维权': 'guides/legal-rights.html'
+};
+
 var guideContents = {
   '入门检查': {
     title: '🔍 入门检查法 - 5分钟快速排查',
@@ -270,7 +279,11 @@ var guideContents = {
 function openGuide(key) {
   var guide = guideContents[key];
   if (!guide) return;
-  document.getElementById('modalContent').innerHTML = '<h2>' + guide.title + '</h2>' + guide.content;
+  var pageUrl = guidePageMap[key] || '';
+  var footerHtml = pageUrl
+    ? '<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);"><a href="' + pageUrl + '" target="_blank" style="color:#2563eb;font-size:14px;">📄 在新页面打开完整版（可保存/打印）</a></div>'
+    : '';
+  document.getElementById('modalContent').innerHTML = '<h2>' + guide.title + '</h2>' + guide.content + footerHtml;
   document.getElementById('modalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -317,15 +330,22 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   showToast('✅ 举报已提交，感谢你的贡献！');
 });
 
-// 简单的中国城市经纬度映射
-function getCityLat(city) {
-  var map = { '北京': 39.9042, '上海': 31.2304, '广州': 23.1291, '深圳': 22.5431, '杭州': 30.2741, '成都': 30.5728, '武汉': 30.5928, '南京': 32.0603, '重庆': 29.5630, '西安': 34.3416, '长沙': 28.2282, '天津': 39.3434, '苏州': 31.2990, '厦门': 24.4798, '郑州': 34.7466 };
-  return map[city] || 34.3;
-}
-function getCityLng(city) {
-  var map = { '北京': 116.4074, '上海': 121.4737, '广州': 113.2644, '深圳': 114.0579, '杭州': 120.1551, '成都': 104.0668, '武汉': 114.3055, '南京': 118.7969, '重庆': 106.5516, '西安': 108.9398, '长沙': 112.9388, '天津': 117.3616, '苏州': 120.5853, '厦门': 118.0894, '郑州': 113.6254 };
-  return map[city] || 108.9;
-}
+// 中国城市经纬度映射（支持举报时动态添加）
+var cityCoordMap = {
+  '北京':[39.9042,116.4074], '上海':[31.2304,121.4737], '广州':[23.1291,113.2644],
+  '深圳':[22.5431,114.0579], '杭州':[30.2741,120.1551], '成都':[30.5728,104.0668],
+  '武汉':[30.5928,114.3055], '南京':[32.0603,118.7969], '重庆':[29.5630,106.5516],
+  '西安':[34.3416,108.9398], '长沙':[28.2282,112.9388], '天津':[39.3434,117.3616],
+  '苏州':[31.2990,120.5853], '厦门':[24.4798,118.0894], '郑州':[34.7466,113.6254],
+  '昆明':[25.0389,102.7183], '三亚':[18.2528,109.5120], '大理':[25.6065,100.2676],
+  '青岛':[36.0671,120.3826], '丽江':[26.8721,100.2299], '合肥':[31.8206,117.2272],
+  '福州':[26.0745,119.2965], '南昌':[28.6820,115.8579], '济南':[36.6512,117.1201],
+  '沈阳':[41.8057,123.4328], '东莞':[23.0208,113.7518], '贵阳':[26.6470,106.6302],
+  '珠海':[22.2707,113.5767], '南宁':[22.8170,108.3665], '兰州':[36.0611,103.8343],
+  '呼和浩特':[40.8424,111.7490]
+};
+function getCityLat(city) { return cityCoordMap[city] ? cityCoordMap[city][0] : 34.3; }
+function getCityLng(city) { return cityCoordMap[city] ? cityCoordMap[city][1] : 108.9; }
 
 // ===== Toast 通知 =====
 function showToast(msg) {
