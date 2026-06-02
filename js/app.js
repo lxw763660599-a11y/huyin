@@ -88,8 +88,12 @@ function buildPopup(loc) {
     html += '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.12);">' +
       '<div style="font-size:12px;color:#f59e0b;font-weight:600;margin-bottom:8px;">📰 相关新闻报道</div>';
     loc.cases.forEach(function(c) {
+      var hasUrl = c.url && c.url.trim() !== '';
+      var titleHtml = hasUrl
+        ? '<a href="' + c.url + '" target="_blank" rel="noopener" style="color:#93c5fd;font-size:13px;text-decoration:none;line-height:1.4;display:block;font-weight:500;cursor:pointer;">' + c.title + ' ↗</a>'
+        : '<span style="color:#cbd5e1;font-size:13px;line-height:1.4;display:block;font-weight:500;">' + c.title + '</span>';
       html += '<div style="margin-bottom:8px;padding:8px;background:rgba(245,158,11,0.08);border-radius:6px;border-left:2px solid #f59e0b;">' +
-        '<a href="' + (c.url || '#') + '" target="_blank" rel="noopener" style="color:#93c5fd;font-size:13px;text-decoration:none;line-height:1.4;display:block;font-weight:500;">' + c.title + '</a>' +
+        titleHtml +
         '<span style="font-size:11px;color:#64748b;">' + c.source + ' · ' + c.date + '</span>' +
         '</div>';
     });
