@@ -76,6 +76,30 @@ function getRiskIcon(risk) {
   });
 }
 
+function buildPopup(loc) {
+  var html = '<div style="font-family: sans-serif; min-width: 260px; max-width: 360px;">' +
+    '<h4 style="margin:0 0 6px;font-size:15px;color:#fff;">' + loc.name + '</h4>' +
+    '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:' + getRiskColor(loc.risk) + ';">' + loc.risk + '风险</span>' +
+    '<span style="font-size:12px;color:#94a3b8;margin-left:6px;">' + loc.type + ' · ' + loc.city + '</span>' +
+    '<p style="margin:10px 0 6px;font-size:13px;color:#cbd5e1;line-height:1.5;">' + loc.desc + '</p>' +
+    '<small style="color:#64748b;">报告时间：' + loc.date + '</small>';
+
+  if (loc.cases && loc.cases.length > 0) {
+    html += '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.12);">' +
+      '<div style="font-size:12px;color:#f59e0b;font-weight:600;margin-bottom:8px;">📰 相关新闻报道</div>';
+    loc.cases.forEach(function(c) {
+      html += '<div style="margin-bottom:8px;padding:8px;background:rgba(245,158,11,0.08);border-radius:6px;border-left:2px solid #f59e0b;">' +
+        '<a href="' + (c.url || '#') + '" target="_blank" rel="noopener" style="color:#93c5fd;font-size:13px;text-decoration:none;line-height:1.4;display:block;font-weight:500;">' + c.title + '</a>' +
+        '<span style="font-size:11px;color:#64748b;">' + c.source + ' · ' + c.date + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
 function renderMarkers() {
   // 清除旧标记
   markers.forEach(function(m) { map.removeLayer(m); });
@@ -88,15 +112,7 @@ function renderMarkers() {
   filtered.forEach(function(loc) {
     var marker = L.marker([loc.lat, loc.lng], { icon: getRiskIcon(loc.risk) })
       .addTo(map)
-      .bindPopup(
-        '<div style="font-family: sans-serif; min-width: 220px;">' +
-        '<h4 style="margin:0 0 4px;font-size:15px;">' + loc.name + '</h4>' +
-        '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:' + getRiskColor(loc.risk) + ';">' + loc.risk + '风险</span>' +
-        '<span style="font-size:12px;color:#94a3b8;margin-left:6px;">' + loc.type + ' · ' + loc.city + '</span>' +
-        '<p style="margin:8px 0 4px;font-size:13px;color:#cbd5e1;">' + loc.desc + '</p>' +
-        '<small style="color:#64748b;">报告时间：' + loc.date + '</small>' +
-        '</div>'
-      );
+      .bindPopup(buildPopup(loc));
     markers.push(marker);
   });
 }
@@ -124,13 +140,7 @@ document.getElementById('mapSearch').addEventListener('input', function() {
         (loc.name.toLowerCase().indexOf(query) > -1 || loc.city.toLowerCase().indexOf(query) > -1)) {
       var marker = L.marker([loc.lat, loc.lng], { icon: getRiskIcon(loc.risk) })
         .addTo(map)
-        .bindPopup('<div style="font-family: sans-serif; min-width: 220px;">' +
-          '<h4 style="margin:0 0 4px;font-size:15px;">' + loc.name + '</h4>' +
-          '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:' + getRiskColor(loc.risk) + ';">' + loc.risk + '风险</span>' +
-          '<span style="font-size:12px;color:#94a3b8;margin-left:6px;">' + loc.type + ' · ' + loc.city + '</span>' +
-          '<p style="margin:8px 0 4px;font-size:13px;color:#cbd5e1;">' + loc.desc + '</p>' +
-          '<small style="color:#64748b;">报告时间：' + loc.date + '</small>' +
-          '</div>');
+        .bindPopup(buildPopup(loc));
       markers.push(marker);
     }
   });
@@ -342,7 +352,7 @@ var cityCoordMap = {
   '福州':[26.0745,119.2965], '南昌':[28.6820,115.8579], '济南':[36.6512,117.1201],
   '沈阳':[41.8057,123.4328], '东莞':[23.0208,113.7518], '贵阳':[26.6470,106.6302],
   '珠海':[22.2707,113.5767], '南宁':[22.8170,108.3665], '兰州':[36.0611,103.8343],
-  '呼和浩特':[40.8424,111.7490]
+  '呼和浩特':[40.8424,111.7490], '石家庄':[38.0428,114.5149]
 };
 function getCityLat(city) { return cityCoordMap[city] ? cityCoordMap[city][0] : 34.3; }
 function getCityLng(city) { return cityCoordMap[city] ? cityCoordMap[city][1] : 108.9; }
