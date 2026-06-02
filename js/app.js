@@ -361,6 +361,44 @@ var cityCoordMap = {
 function getCityLat(city) { return cityCoordMap[city] ? cityCoordMap[city][0] : 34.3; }
 function getCityLng(city) { return cityCoordMap[city] ? cityCoordMap[city][1] : 108.9; }
 
+// ===== 新闻案例列表 =====
+function renderNewsCases() {
+  var grid = document.getElementById('newsGrid');
+  if (!grid) return;
+
+  var html = '';
+  hotspotLocations.forEach(function(loc) {
+    if (!loc.cases || loc.cases.length === 0) return;
+
+    html += '<div class="news-card" style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;margin-bottom:16px;">';
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+    html += '<span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:' + getRiskColor(loc.risk) + ';">' + loc.risk + '风险</span>';
+    html += '<strong style="color:#fff;font-size:15px;">' + loc.name + '</strong>';
+    html += '<span style="font-size:12px;color:#94a3b8;">' + loc.type + ' · ' + loc.city + '</span>';
+    html += '</div>';
+    html += '<p style="color:#cbd5e1;font-size:13px;margin:0 0 12px;line-height:1.5;">' + loc.desc + '</p>';
+
+    loc.cases.forEach(function(c) {
+      var hasUrl = c.url && c.url.trim() !== '';
+      html += '<div style="padding:10px 14px;margin-bottom:8px;background:rgba(245,158,11,0.06);border-radius:8px;border-left:3px solid #f59e0b;">';
+      if (hasUrl) {
+        html += '<a href="' + c.url + '" target="_blank" rel="noopener" style="color:#60a5fa;font-size:13px;text-decoration:none;font-weight:500;display:block;">' + c.title + ' ↗</a>';
+      } else {
+        html += '<span style="color:#94a3b8;font-size:13px;display:block;">' + c.title + '</span>';
+      }
+      html += '<span style="font-size:11px;color:#64748b;">' + c.source + ' · ' + c.date + '</span>';
+      html += '</div>';
+    });
+
+    html += '</div>';
+  });
+
+  if (!html) {
+    html = '<p style="color:#94a3b8;text-align:center;padding:40px;">暂无案例数据</p>';
+  }
+  grid.innerHTML = html;
+}
+
 // ===== Toast 通知 =====
 function showToast(msg) {
   var toast = document.createElement('div');
@@ -377,6 +415,7 @@ function showToast(msg) {
 // ===== 初始化 =====
 document.addEventListener('DOMContentLoaded', function() {
   animateStats();
+  renderNewsCases();
   initMap();
 
   // 延迟加载地图（性能优化）
