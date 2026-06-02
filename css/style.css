@@ -143,10 +143,16 @@ input, select, textarea { font-family: inherit; }
 .filter-btn.active, .filter-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
 .map-legend { display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary); margin-left: auto; }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
 .legend-dot.safe { background: var(--success); }
 .legend-dot.medium { background: var(--warning); }
 .legend-dot.high { background: var(--danger); }
+.legend-cross { width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: middle; position: relative; }
+.legend-cross::before, .legend-cross::after {
+  content: ''; position: absolute; background: #6b7280; top: 0; left: 5px; width: 2px; height: 12px; border-radius: 1px;
+}
+.legend-cross::before { transform: rotate(45deg); }
+.legend-cross::after { transform: rotate(-45deg); }
 
 .map-container { height: 500px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
 .map-container .leaflet-container { height: 100%; background: var(--bg-card); }

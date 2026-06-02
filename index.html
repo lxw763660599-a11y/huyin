@@ -15,7 +15,6 @@
     <a href="#hero" class="logo">🛡️ 护隐</a>
     <div class="nav-links">
       <a href="#map-section">风险地图</a>
-      <a href="#news-cases">真实案例</a>
       <a href="#guides">防护攻略</a>
       <a href="#check">摄像头检测</a>
       <a href="#report">举报入口</a>
@@ -43,12 +42,12 @@
         <span class="stat-label">已标记地点</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num" data-count="46">0</span>
+        <span class="stat-num" data-count="50">0</span>
         <span class="stat-label">覆盖城市</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num" data-count="156000">0</span>
-        <span class="stat-label">用户信任</span>
+        <span class="stat-num" data-count="54">0</span>
+        <span class="stat-label">过往案例</span>
       </div>
     </div>
     <div class="hero-btns">
@@ -78,21 +77,13 @@
       <button class="filter-btn" data-type="出租屋">出租屋</button>
     </div>
     <div class="map-legend">
-      <span class="legend-dot safe"></span> 低风险
-      <span class="legend-dot medium"></span> 中风险
-      <span class="legend-dot high"></span> 高风险
+      <span class="legend-dot high"></span> 高风险（已报警）
+      <span class="legend-dot medium"></span> 关注区域
+      <span class="legend-dot safe"></span> 疑似区域
+      <span class="legend-cross"></span> 过往案例
     </div>
   </div>
   <div class="map-container" id="map"></div>
-</section>
-
-<!-- 新闻报道案例 -->
-<section class="section" id="news-cases">
-  <div class="section-header">
-    <h2>📰 真实偷拍案例报道</h2>
-    <p>以下为各地公开新闻报道的真实偷拍事件，点击标题可查看原文</p>
-  </div>
-  <div class="news-grid" id="newsGrid"></div>
 </section>
 
 <!-- 防护攻略 -->
@@ -217,7 +208,6 @@
             <option value="试衣间">试衣间</option>
             <option value="浴室">浴室/温泉</option>
             <option value="出租屋">出租屋</option>
-            <option value="出租屋">出租屋</option>
             <option value="其他">其他</option>
           </select>
         </div>
@@ -304,6 +294,7 @@
 
 <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="data/locations.js"></script>
+<script src="data/cases.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
