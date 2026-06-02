@@ -309,12 +309,16 @@ function getCityLng(city) { return cityCoordMap[city] ? cityCoordMap[city][1] : 
 
 document.getElementById('reportForm').addEventListener('submit', function(e) {
   e.preventDefault();
+  var form = this;
   var name = document.getElementById('reportName').value.trim();
   var type = document.getElementById('reportType').value;
   var city = document.getElementById('reportCity').value.trim();
   var address = document.getElementById('reportAddress').value.trim();
   var desc = document.getElementById('reportDesc').value.trim();
   var risk = document.querySelector('input[name="risk"]:checked').value;
+  var contact = document.getElementById('reportContact').value.trim();
+
+  // 添加到地图本地显示
   var newLocation = {
     name: name + (address ? ' - ' + address : ''),
     type: type, city: city,
@@ -324,8 +328,39 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   };
   hotspotLocations.push(newLocation);
   if (map) renderMarkers();
-  this.reset();
-  showToast('✅ 举报已提交，感谢你的贡献！');
+
+  // 发送到 Formspree 邮箱
+  var formData = new FormData();
+  formData.append('地点名称', name);
+  formData.append('场所类型', type);
+  formData.append('所在城市', city);
+  formData.append('详细地址', address);
+  formData.append('详细描述', desc);
+  formData.append('风险等级', risk);
+  formData.append('联系方式', contact || '未填写');
+  formData.append('提交时间', new Date().toLocaleString('zh-CN'));
+
+  var endpoint = form.getAttribute('action');
+  if (endpoint.indexOf('YOUR_FORM_ID') > -1) {
+    // Formspree 还没配置
+    showToast('✅ 举报已记录！');
+    form.reset();
+    return;
+  }
+
+  showToast('📤 正在提交...');
+  fetch(endpoint, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
+    .then(function(res) {
+      if (res.ok) {
+        form.reset();
+        showToast('✅ 举报已提交，感谢你的贡献！');
+      } else {
+        showToast('⚠️ 提交失败，请稍后重试');
+      }
+    })
+    .catch(function() {
+      showToast('⚠️ 网络错误，请稍后重试');
+    });
 });
 
 function showToast(msg) {

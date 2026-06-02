@@ -192,15 +192,15 @@
     <p>如果你发现了偷拍设备或可疑地点，请告诉我们，帮助更多人远离危险</p>
   </div>
   <div class="report-container">
-    <form class="report-form" id="reportForm">
+    <form class="report-form" id="reportForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
       <div class="form-row">
         <div class="form-group">
           <label>地点名称 *</label>
-          <input type="text" id="reportName" placeholder="如：XX酒店302房间" required>
+          <input type="text" name="地点名称" id="reportName" placeholder="如：XX酒店302房间" required>
         </div>
         <div class="form-group">
           <label>场所类型 *</label>
-          <select id="reportType" required>
+          <select name="场所类型" id="reportType" required>
             <option value="">请选择</option>
             <option value="酒店">酒店</option>
             <option value="民宿">民宿</option>
@@ -215,16 +215,16 @@
       <div class="form-row">
         <div class="form-group">
           <label>所在城市 *</label>
-          <input type="text" id="reportCity" placeholder="如：北京" required>
+          <input type="text" name="所在城市" id="reportCity" placeholder="如：北京" required>
         </div>
         <div class="form-group">
           <label>详细地址</label>
-          <input type="text" id="reportAddress" placeholder="区/街道/门牌号">
+          <input type="text" name="详细地址" id="reportAddress" placeholder="区/街道/门牌号">
         </div>
       </div>
       <div class="form-group">
         <label>详细描述 *</label>
-        <textarea id="reportDesc" rows="4" placeholder="请描述你发现的具体情况：" required></textarea>
+        <textarea name="详细描述" id="reportDesc" rows="4" placeholder="请描述你发现的具体情况：" required></textarea>
       </div>
       <div class="form-group">
         <label>风险等级</label>
@@ -236,7 +236,7 @@
       </div>
       <div class="form-group">
         <label>联系方式（选填，方便我们反馈处理结果）</label>
-        <input type="text" id="reportContact" placeholder="手机号或邮箱">
+        <input type="text" name="联系方式" id="reportContact" placeholder="手机号或邮箱">
       </div>
       <button type="submit" class="btn btn-primary btn-lg">提交举报</button>
     </form>
