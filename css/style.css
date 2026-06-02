@@ -157,6 +157,10 @@ input, select, textarea { font-family: inherit; }
 .map-container { height: 500px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
 .map-container .leaflet-container { height: 100%; background: var(--bg-card); }
 
+/* 过往案例 X 标记可点击 */
+.case-marker-icon { cursor: pointer !important; }
+.case-marker-icon > div { pointer-events: auto !important; }
+
 /* 关闭按钮可见性 */
 .leaflet-popup-close-button {
   color: #fff !important;

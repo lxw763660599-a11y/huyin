@@ -82,12 +82,15 @@ function getRiskIcon(risk) {
 // 过往案例灰色 X 图标
 function getCaseIcon() {
   return L.divIcon({
-    className: '',
-    html: '<div style="width:12px;height:12px;position:relative;">' +
-          '<svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="2" x2="10" y2="10" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/><line x1="10" y1="2" x2="2" y2="10" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/></svg></div>',
-    iconSize: [12, 12],
-    iconAnchor: [6, 6],
-    popupAnchor: [0, -6]
+    className: 'case-marker-icon',
+    html: '<div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;">' +
+          '<svg width="16" height="16" viewBox="0 0 16 16" style="pointer-events:none;">' +
+          '<line x1="3" y1="3" x2="13" y2="13" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"/>' +
+          '<line x1="13" y1="3" x2="3" y2="13" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"/>' +
+          '</svg></div>',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
   });
 }
 
