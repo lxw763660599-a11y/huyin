@@ -23,14 +23,6 @@ document.querySelectorAll('.mobile-menu a').forEach(function(a) {
     document.getElementById('mobileMenu').classList.remove('active');
   });
 });
-window.addEventListener('scroll', function() {
-  var nav = document.getElementById('navbar');
-  if (window.scrollY > 50) {
-    nav.style.boxShadow = '0 4px 24px rgba(0,0,0,0.4)';
-  } else {
-    nav.style.boxShadow = 'none';
-  }
-});
 
 // ===== 风险地图 =====
 var map = null;
@@ -38,17 +30,23 @@ var markers = [];
 var caseMarkers = [];
 var currentFilter = 'all';
 var showCases = true;
+var dissolved = false;
+var defaultCenter = [34.3, 108.9];
+var defaultZoom = 5;
+var dissolvedZoom = 7;
 
 function initMap() {
   if (map) return;
+  var mapEl = document.getElementById('map');
+  if (!mapEl) return;
 
-  map = L.map('map', {
-    center: [34.3, 108.9],
-    zoom: 5,
-    zoomControl: true
+  map = L.map(mapEl, {
+    center: defaultCenter,
+    zoom: defaultZoom,
+    zoomControl: true,
+    attributionControl: false
   });
 
-  // 高德地图瓦片
   L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
     subdomains: ['1','2','3','4'],
     attribution: '&copy; 高德地图',
@@ -59,14 +57,12 @@ function initMap() {
   renderCaseMarkers();
 }
 
-// 风险颜色
 function getRiskColor(risk) {
   if (risk === '高') return '#dc2626';
   if (risk === '中') return '#f59e0b';
   return '#10b981';
 }
 
-// 风险圆点图标
 function getRiskIcon(risk) {
   var color = getRiskColor(risk);
   return L.divIcon({
@@ -79,7 +75,6 @@ function getRiskIcon(risk) {
   });
 }
 
-// 过往案例灰色 X 图标
 function getCaseIcon() {
   return L.divIcon({
     className: 'case-marker-icon',
@@ -94,26 +89,22 @@ function getCaseIcon() {
   });
 }
 
-// 地点弹窗
 function buildPopup(loc) {
   var riskLabel = loc.risk === '高' ? '高风险（已报警）' : loc.risk === '中' ? '多人关注区域' : '疑似区域';
-  var html = '<div style="font-family: sans-serif; min-width: 220px; max-width: 300px;">' +
+  return '<div style="font-family: sans-serif; min-width: 220px; max-width: 300px;">' +
     '<h4 style="margin:0 0 6px;font-size:15px;color:#fff;">' + loc.name + '</h4>' +
     '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;color:#fff;background:' + getRiskColor(loc.risk) + ';">' + riskLabel + '</span>' +
     '<span style="font-size:12px;color:#94a3b8;margin-left:6px;">' + loc.type + ' · ' + loc.city + '</span>' +
     '<p style="margin:10px 0 4px;font-size:13px;color:#cbd5e1;line-height:1.5;">' + loc.desc + '</p>' +
     '<small style="color:#64748b;">报告时间：' + loc.date + '</small>' +
     '</div>';
-  return html;
 }
 
-// 过往案例弹窗
 function buildCasePopup(c) {
   var hasUrl = c.url && c.url.trim() !== '';
   var titleHtml = hasUrl
     ? '<a href="' + c.url + '" target="_blank" rel="noopener" style="color:#93c5fd;font-size:13px;text-decoration:none;font-weight:500;">' + c.title + ' ↗</a>'
     : '<span style="color:#cbd5e1;font-size:13px;font-weight:500;">' + c.title + '</span>';
-
   return '<div style="font-family: sans-serif; min-width: 240px; max-width: 320px;">' +
     '<div style="font-size:12px;color:#6b7280;font-weight:600;margin-bottom:4px;">📰 过往案例</div>' +
     titleHtml +
@@ -121,15 +112,13 @@ function buildCasePopup(c) {
     '</div>';
 }
 
-// 渲染地点标记
 function renderMarkers() {
+  if (!map) return;
   markers.forEach(function(m) { map.removeLayer(m); });
   markers = [];
-
   var filtered = currentFilter === 'all'
     ? hotspotLocations
     : hotspotLocations.filter(function(l) { return l.type === currentFilter; });
-
   filtered.forEach(function(loc) {
     var marker = L.marker([loc.lat, loc.lng], { icon: getRiskIcon(loc.risk) })
       .addTo(map)
@@ -138,12 +127,11 @@ function renderMarkers() {
   });
 }
 
-// 渲染过往案例标记
 function renderCaseMarkers() {
+  if (!map) return;
   caseMarkers.forEach(function(m) { map.removeLayer(m); });
   caseMarkers = [];
-  if (!showCases) return;
-
+  if (!showCases || typeof newsCaseMarkers === 'undefined') return;
   newsCaseMarkers.forEach(function(c) {
     var marker = L.marker([c.lat, c.lng], { icon: getCaseIcon(), opacity: 0.75 })
       .addTo(map)
@@ -163,36 +151,138 @@ document.querySelectorAll('.filter-btn').forEach(function(btn) {
 });
 
 // 地图搜索
-document.getElementById('mapSearch').addEventListener('input', function() {
-  var query = this.value.trim().toLowerCase();
-  if (!query) { renderMarkers(); renderCaseMarkers(); return; }
+var searchInput = document.getElementById('mapSearch');
+if (searchInput) {
+  searchInput.addEventListener('input', function() {
+    var query = this.value.trim().toLowerCase();
+    if (!query) { renderMarkers(); renderCaseMarkers(); return; }
+    markers.forEach(function(m) { map.removeLayer(m); });
+    markers = [];
+    caseMarkers.forEach(function(m) { map.removeLayer(m); });
+    caseMarkers = [];
 
-  markers.forEach(function(m) { map.removeLayer(m); });
-  markers = [];
-  caseMarkers.forEach(function(m) { map.removeLayer(m); });
-  caseMarkers = [];
-
-  hotspotLocations.forEach(function(loc) {
-    if ((currentFilter === 'all' || loc.type === currentFilter) &&
-        (loc.name.toLowerCase().indexOf(query) > -1 || loc.city.toLowerCase().indexOf(query) > -1)) {
-      var marker = L.marker([loc.lat, loc.lng], { icon: getRiskIcon(loc.risk) })
-        .addTo(map)
-        .bindPopup(buildPopup(loc));
-      markers.push(marker);
-    }
-  });
-
-  if (showCases) {
-    newsCaseMarkers.forEach(function(c) {
-      if (c.city.toLowerCase().indexOf(query) > -1 || c.title.toLowerCase().indexOf(query) > -1) {
-        var marker = L.marker([c.lat, c.lng], { icon: getCaseIcon(), opacity: 0.75 })
+    hotspotLocations.forEach(function(loc) {
+      if ((currentFilter === 'all' || loc.type === currentFilter) &&
+          (loc.name.toLowerCase().indexOf(query) > -1 || loc.city.toLowerCase().indexOf(query) > -1)) {
+        var marker = L.marker([loc.lat, loc.lng], { icon: getRiskIcon(loc.risk) })
           .addTo(map)
-          .bindPopup(buildCasePopup(c));
-        caseMarkers.push(marker);
+          .bindPopup(buildPopup(loc));
+        markers.push(marker);
       }
     });
+
+    if (showCases && typeof newsCaseMarkers !== 'undefined') {
+      newsCaseMarkers.forEach(function(c) {
+        if (c.city.toLowerCase().indexOf(query) > -1 || c.title.toLowerCase().indexOf(query) > -1) {
+          var marker = L.marker([c.lat, c.lng], { icon: getCaseIcon(), opacity: 0.75 })
+            .addTo(map)
+            .bindPopup(buildCasePopup(c));
+          caseMarkers.push(marker);
+        }
+      });
+    }
+  });
+}
+
+// ===== 消散动画 =====
+function dissolveMap() {
+  if (dissolved) return;
+  dissolved = true;
+  var hero = document.getElementById('mapHero');
+  if (hero) hero.classList.add('dissolved');
+
+  // 地图推进放大
+  if (map) {
+    map.setView(defaultCenter, dissolvedZoom, { animate: true, duration: 0.8 });
+    setTimeout(function() { map.invalidateSize(); }, 900);
+  }
+
+  // 更新导航栏
+  var nav = document.getElementById('navbar');
+  if (nav) nav.style.boxShadow = '0 4px 24px rgba(0,0,0,0.4)';
+}
+
+function undissolveMap() {
+  if (!dissolved) return;
+  dissolved = false;
+  var hero = document.getElementById('mapHero');
+  if (hero) hero.classList.remove('dissolved');
+
+  if (map) {
+    map.setView(defaultCenter, defaultZoom, { animate: true, duration: 0.6 });
+    setTimeout(function() { map.invalidateSize(); }, 700);
+  }
+
+  var nav = document.getElementById('navbar');
+  if (nav) nav.style.boxShadow = 'none';
+}
+
+// "查看风险地图" 按钮
+var exploreBtn = document.getElementById('exploreMapBtn');
+if (exploreBtn) {
+  exploreBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    dissolveMap();
+  });
+}
+
+// 导航栏 "风险地图" 回到顶部
+var navMapBtn = document.getElementById('navMapBtn');
+if (navMapBtn) {
+  navMapBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// 移动端菜单中的风险地图
+var mobileMapTriggers = document.querySelectorAll('.mobile-map-trigger, .footer-map-trigger');
+mobileMapTriggers.forEach(function(el) {
+  el.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('mobileMenu').classList.remove('active');
+  });
+});
+
+// 导航栏 logo 回到顶部
+var navLogo = document.getElementById('navLogo');
+if (navLogo) {
+  navLogo.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// 滚动监听：下滑超过 30% 视口触发消散
+var scrollThreshold = window.innerHeight * 0.3;
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    requestAnimationFrame(function() {
+      var scrollY = window.scrollY;
+      if (scrollY > scrollThreshold) {
+        dissolveMap();
+      } else if (scrollY < 10) {
+        undissolveMap();
+      }
+      ticking = false;
+    });
+    ticking = true;
   }
 });
+
+// 触摸滑动（移动端）
+var touchStartY = 0;
+document.addEventListener('touchstart', function(e) {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+document.addEventListener('touchend', function(e) {
+  var diff = touchStartY - e.changedTouches[0].clientY;
+  if (diff > 50 && window.scrollY < 10) {
+    dissolveMap();
+  }
+}, { passive: true });
 
 // ===== 攻略弹窗 =====
 var guideContents = {
@@ -260,7 +350,7 @@ var guideContents = {
     content: '<h3>第一步：保护自己</h3><ul><li><strong>不要触碰设备</strong>：保留指纹证据</li><li><strong>保持冷静</strong>：不与可疑人员冲突</li><li><strong>立即离开</strong>：确保自身安全</li></ul>' +
       '<h3>第二步：取证</h3><ul><li>用手机拍照或录像记录设备位置和周围环境</li><li>记录房间号、地址</li></ul>' +
       '<h3>第三步：立即报警（110）</h3><ul><li>等待警方到场处理</li><li>配合调查取证</li></ul>' +
-      '<h3>第四步：维权</h3><ul><li>要求酒店/场所管理方承担责治</li><li>向消费者协会投诉</li><li>提起民事诉讼要求赔偿</li></ul>' +
+      '<h3>第四步：维权</h3><ul><li>要求酒店/场所管理方承担责任</li><li>向消费者协会投诉</li><li>提起民事诉讼要求赔偿</li></ul>' +
       '<h3>法律依据</h3><p>《治安管理处罚法》第四十二条：偷窥、偷拍、窃听、散布他人隐私的，处5日以下拘留或者500元以下罚款；情节较重的，处5日以上10日以下拘留。</p>' +
       '<p>《刑法》第二百八十四条：非法使用窃听、窃照专用器材，造成严重后果的，处二年以下有期徒刑、拘役或者管制。</p>' +
       '<div style="margin-top:16px;padding:16px;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);border-radius:8px;"><strong style="color:#dc2626;">📞 紧急求助：110</strong></div>'
@@ -318,7 +408,6 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   var risk = document.querySelector('input[name="risk"]:checked').value;
   var contact = document.getElementById('reportContact').value.trim();
 
-  // 添加到地图本地显示
   var newLocation = {
     name: name + (address ? ' - ' + address : ''),
     type: type, city: city,
@@ -329,7 +418,6 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
   hotspotLocations.push(newLocation);
   if (map) renderMarkers();
 
-  // 发送到 Formspree 邮箱
   var formData = new FormData();
   formData.append('地点名称', name);
   formData.append('场所类型', type);
@@ -342,7 +430,6 @@ document.getElementById('reportForm').addEventListener('submit', function(e) {
 
   var endpoint = form.getAttribute('action');
   if (endpoint.indexOf('YOUR_FORM_ID') > -1) {
-    // Formspree 还没配置
     showToast('✅ 举报已记录！');
     form.reset();
     return;
@@ -381,16 +468,5 @@ document.addEventListener('DOMContentLoaded', function() {
   initMap();
   setTimeout(function() {
     if (map) map.invalidateSize();
-  }, 500);
+  }, 300);
 });
-
-var mapObserver = new IntersectionObserver(function(entries) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting && !map) {
-      initMap();
-      mapObserver.disconnect();
-    }
-  });
-}, { threshold: 0.1 });
-var mapSection = document.getElementById('map-section');
-if (mapSection) mapObserver.observe(mapSection);

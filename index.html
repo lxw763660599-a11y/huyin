@@ -12,9 +12,9 @@
 <!-- 导航栏 -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="#hero" class="logo">🛡️ 护隐</a>
+    <a href="#" class="logo" id="navLogo">🛡️ 护隐</a>
     <div class="nav-links">
-      <a href="#map-section">风险地图</a>
+      <a href="#" id="navMapBtn">风险地图</a>
       <a href="#guides">防护攻略</a>
       <a href="#check">摄像头检测</a>
       <a href="#report">举报入口</a>
@@ -23,47 +23,54 @@
   </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#map-section">风险地图</a>
+  <a href="#" class="mobile-map-trigger">风险地图</a>
   <a href="#guides">防护攻略</a>
   <a href="#check">摄像头检测</a>
   <a href="#report">举报入口</a>
 </div>
 
-<!-- Hero 区域 -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-    <div class="hero-badge">🔒 隐私安全 · 人人有责</div>
-    <h1>保护你的隐私，<br>远离偷拍威胁</h1>
-    <p>汇聚全国偷拍热点数据，提供专业检测攻略，让每个人都能安全出行。</p>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <span class="stat-num" data-count="55">0</span>
-        <span class="stat-label">已标记地点</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" data-count="50">0</span>
-        <span class="stat-label">覆盖城市</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" data-count="54">0</span>
-        <span class="stat-label">过往案例</span>
-      </div>
-    </div>
-    <div class="hero-btns">
-      <a href="#map-section" class="btn btn-primary">查看风险地图</a>
-      <a href="#guides" class="btn btn-outline">学习防护技巧</a>
-    </div>
-  </div>
-</section>
+<!-- 地图 + Hero 融合区域 -->
+<section class="map-hero" id="mapHero">
+  <!-- 地图层 -->
+  <div class="map-hero-bg" id="map"></div>
 
-<!-- 风险地图 -->
-<section class="section" id="map-section">
-  <div class="section-header">
-    <h2>🗺️ 偷拍风险地图</h2>
-    <p>查看全国已报告的高风险地点，出行前检查目的地安全性</p>
+  <!-- Hero 标题覆盖层 -->
+  <div class="map-hero-overlay" id="heroOverlay">
+    <div class="hero-content">
+      <div class="hero-badge">🔒 隐私安全 · 人人有责</div>
+      <h1>
+        <span class="hl-word">保护你的隐私</span>
+        <span class="hl-word">远离偷拍威胁</span>
+      </h1>
+      <p>汇聚全国偷拍热点数据，提供专业检测攻略，让每个人都能安全出行。</p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num" data-count="55">0</span>
+          <span class="stat-label">已标记地点</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-count="50">0</span>
+          <span class="stat-label">覆盖城市</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-count="54">0</span>
+          <span class="stat-label">过往案例</span>
+        </div>
+      </div>
+      <div class="hero-btns">
+        <button class="btn btn-primary" id="exploreMapBtn">查看风险地图</button>
+        <a href="#guides" class="btn btn-outline">学习防护技巧</a>
+      </div>
+    </div>
+    <!-- 下滑提示 -->
+    <div class="scroll-hint" id="scrollHint">
+      <span>下滑探索</span>
+      <div class="scroll-arrow"></div>
+    </div>
   </div>
-  <div class="map-controls">
+
+  <!-- 地图控件区（初始隐藏，消散后显示） -->
+  <div class="map-controls-bar" id="mapControlsBar">
     <div class="map-search">
       <input type="text" id="mapSearch" placeholder="搜索城市或地点..." />
     </div>
@@ -77,13 +84,12 @@
       <button class="filter-btn" data-type="出租屋">出租屋</button>
     </div>
     <div class="map-legend">
-      <span class="legend-dot high"></span> 高风险（已报警）
-      <span class="legend-dot medium"></span> 关注区域
-      <span class="legend-dot safe"></span> 疑似区域
-      <span class="legend-cross"></span> 过往案例
+      <span class="legend-dot high"></span> 高风险
+      <span class="legend-dot medium"></span> 关注
+      <span class="legend-dot safe"></span> 疑似
+      <span class="legend-cross"></span> 案例
     </div>
   </div>
-  <div class="map-container" id="map"></div>
 </section>
 
 <!-- 防护攻略 -->
@@ -93,7 +99,6 @@
     <p>从入门到精通，学会识别和防范各类偷拍设备</p>
   </div>
   <div class="guide-grid">
-    <!-- 攻略卡片 -->
     <div class="guide-card" onclick="openGuide('入门检查')">
       <div class="guide-icon">🔍</div>
       <h3>入门检查法</h3>
@@ -249,9 +254,7 @@
         <li>不要擅自触碰或破坏设备</li>
         <li>保留照片、视频等证据</li>
       </ul>
-      <div class="emergency-call">
-        📞 紧急求助：<strong>110</strong>
-      </div>
+      <div class="emergency-call">📞 紧急求助：<strong>110</strong></div>
     </div>
   </div>
 </section>
@@ -274,7 +277,7 @@
     <div class="footer-links">
       <div class="footer-col">
         <h4>功能</h4>
-        <a href="#map-section">风险地图</a>
+        <a href="#" class="footer-map-trigger">风险地图</a>
         <a href="#guides">防护攻略</a>
         <a href="#check">检测教程</a>
       </div>
